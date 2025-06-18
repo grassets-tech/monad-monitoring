@@ -1,0 +1,14 @@
+[Unit]
+Description=Node Exporter
+After=network.target
+StartLimitIntervalSec=0
+
+[Service]
+Type=simple
+Restart=always
+RestartSec=1
+User=monitor
+ExecStart=/opt/node_exporter --collector.textfile.directory /home/monad/textfile-collector/data
+
+[Install]
+WantedBy=multi-user.target
