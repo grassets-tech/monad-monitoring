@@ -7,6 +7,7 @@ source /home/monad/.profile
 
 # Get validator DNS
 VALIDATOR_DNS=$(grep 'VALIDATOR_DNS' /home/monad/.env | cut -d '=' -f2) || { echo "VALIDATOR_DNS not found in .env"; exit 1; }
+VALIDATOR_IP=$(curl -s https://api.ipify.org)
 TARGET_DRIVE='triedb'
 
 # Extract the used and total capacity from local monad_mpt binary
@@ -74,8 +75,8 @@ script_dir="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 output_file="$script_dir/data/monad-metrics-data.prom"
 
 # Extract block proposals and skipped blocks from syslog
-mapfile -t block_logs < <(tail -500000 /var/log/syslog | grep -i "${VALIDATOR_DNS}\|${VALIDATOR_DNS}:8000" | grep -E '"message":"(proposed_block|skipped_block)"')
-
+#mapfile -t block_logs < <(tail -500000 /var/log/syslog | grep -i "${VALIDATOR_DNS}\|${VALIDATOR_DNS}:8000" | grep -E '"message":"(proposed_block|skipped_block)"')
+mapfile -t block_logs < <(tail -500000 /var/log/syslog | grep -i "${VALIDATOR_IP}\|${VALIDATOR_IP}:8000" | grep -E '"message":"(proposed_block|skipped_block)"')
 # Process each block log
 declare -a block_proposals
 for log in "${block_logs[@]}"; do
